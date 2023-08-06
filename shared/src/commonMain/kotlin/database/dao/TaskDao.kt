@@ -4,7 +4,7 @@ import database.model.Task2
 import mylocal3.db.LocalDb
 
 fun LocalDb.setTask(task: Task2) {
-    return taskQueries.insertTask(task.id, task.title, task.isDone)
+    return taskQueries.insertTask(task.id, task.title)
 }
 
 fun LocalDb.deleteTask(id: Long) {
@@ -13,7 +13,7 @@ fun LocalDb.deleteTask(id: Long) {
 
 fun LocalDb.getTasksList(): List<Task2> {
     return this.taskQueries.getTasks().executeAsList().map {
-        Task2(it.id, it.title, it.isDone)
+        Task2(it.id, it.title)
     }
 }
 
@@ -21,7 +21,7 @@ fun LocalDb.setTaskList(list: List<Task2>) {
     taskQueries.transaction {
         list.forEach {
             taskQueries.insertTask(
-                it.id,it.title, it.isDone
+                it.id, it.title
             )
         }
     }
