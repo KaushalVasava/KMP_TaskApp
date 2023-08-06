@@ -1,0 +1,18 @@
+import kotlin.Boolean;
+
+CREATE TABLE Task (
+    id INTEGER NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    isDone INTEGER AS Boolean NOT NULL
+);
+
+getTasks:
+SELECT id,title,isDone FROM Task;
+
+insertTask:
+    INSERT OR REPLACE INTO Task(id, title, isDone)
+    VALUES(?, ?,?);
+
+deleteTask:
+DELETE FROM Task
+WHERE id = ?;
