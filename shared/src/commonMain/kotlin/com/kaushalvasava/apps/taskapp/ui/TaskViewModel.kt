@@ -44,10 +44,7 @@ class TaskViewModel(driver: SqlDriver) : ViewModel() {
     fun update(title: String, isDone: Boolean, id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             database.updateTask(title, isDone, id)
-//            val d = database.getTasksList()
             getTasks()
-            print("Data ${tasks.value.toList()}")
-//            tasks.value = d
         }
     }
 }

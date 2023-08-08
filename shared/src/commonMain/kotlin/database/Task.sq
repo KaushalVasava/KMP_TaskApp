@@ -19,5 +19,5 @@ WHERE id = ?;
 
 updateTask:
 UPDATE Task
-SET title = ?, isDone = ?
-WHERE id = ?;
+SET title = :title, isDone = :isDone
+WHERE id = :id;

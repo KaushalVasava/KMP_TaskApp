@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -101,7 +102,13 @@ fun TaskList(viewModel: TaskViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    items(tasks) {
+                    items(tasks.filter { !it.isDone }) {
+                        TaskItem(viewModel, it)
+                    }
+                    item {
+                        Text("Completed")
+                    }
+                    items(tasks.filter { it.isDone }) {
                         TaskItem(viewModel, it)
                     }
                 }
@@ -134,7 +141,7 @@ fun TaskList(viewModel: TaskViewModel) {
 @Composable
 fun TaskItem(viewModel: TaskViewModel, task: Task2) {
     var isCompleted by remember {
-        mutableStateOf(false)
+        mutableStateOf(task.isDone)
     }
     Card(
         Modifier.padding(4.dp).clip(
