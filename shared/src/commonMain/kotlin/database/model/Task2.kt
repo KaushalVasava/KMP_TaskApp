@@ -1,6 +1,7 @@
 package database.model
 
-data class Task2 (
+data class Task2(
     val id: Long = 0,
-    val title : String = ""
+    val title: String = "",
+    val isDone: Boolean = false,
 )

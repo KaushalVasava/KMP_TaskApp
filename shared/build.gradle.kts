@@ -5,10 +5,7 @@ plugins {
     id("com.squareup.sqldelight")
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
-
     android {
         compilations.all {
             kotlinOptions {
@@ -22,15 +19,19 @@ kotlin {
         }
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "shared"
-        }
-    }
+//    listOf(
+//        iosX64(),
+//        iosArm64(),
+//        iosSimulatorArm64()
+//    ).forEach {
+//        it.binaries.framework {
+//            baseName = "shared"
+//        }
+//    }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         val commonMain by getting {
@@ -59,17 +60,24 @@ kotlin {
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
-        val iosMain by getting {
-            dependencies {
-                implementation("com.squareup.sqldelight:native-driver:1.5.5")
-            }
-        }
-//        val iosMain by creating {
+//        val iosMain by getting {
 //            dependsOn(commonMain)
 //            iosX64Main.dependsOn(this)
 //            iosArm64Main.dependsOn(this)
 //            iosSimulatorArm64Main.dependsOn(this)
+//            dependencies {
+//                implementation("com.squareup.sqldelight:native-driver:1.5.5")
+//            }
 //        }
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("com.squareup.sqldelight:native-driver:1.5.5")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -87,8 +95,8 @@ kotlin {
 
 
 sqldelight {
-    database("LocalDb") {
-        packageName = "mylocal3.db"
+    database("TaskDatabase") {
+        packageName = "taskdatabase.db"
         sourceFolders = listOf("kotlin")
     }
 }

@@ -2,19 +2,20 @@ import database.dao.deleteTask
 import database.dao.getTasksList
 import database.dao.setTask
 import com.squareup.sqldelight.db.SqlDriver
+import database.dao.updateTask
 import database.model.Task2
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import mylocal3.db.LocalDb
+import taskdatabase.db.TaskDatabase
 import kotlin.random.Random
 
-class BirdsViewModel(driver: SqlDriver) : ViewModel() {
+class TaskViewModel(driver: SqlDriver) : ViewModel() {
     val tasks = MutableStateFlow<List<Task2>>(emptyList())
 
-    private val database = LocalDb(driver)
+    private val database = TaskDatabase(driver)
 
     init {
         getTasks()
@@ -37,6 +38,16 @@ class BirdsViewModel(driver: SqlDriver) : ViewModel() {
     private fun getTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             tasks.value = database.getTasksList()
+        }
+    }
+
+    fun update(title: String, isDone: Boolean, id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            database.updateTask(title, isDone, id)
+//            val d = database.getTasksList()
+            getTasks()
+            print("Data ${tasks.value.toList()}")
+//            tasks.value = d
         }
     }
 }

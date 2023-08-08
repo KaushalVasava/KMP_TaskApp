@@ -1,15 +1,23 @@
+import kotlin.Boolean;
+
 CREATE TABLE Task (
     id INTEGER NOT NULL PRIMARY KEY,
-    title TEXT NOT NULL
+    title TEXT NOT NULL,
+    isDone INTEGER AS Boolean NOT NULL DEFAULT 0
 );
 
 getTasks:
-SELECT id,title FROM Task;
+SELECT * FROM Task;
 
 insertTask:
-    INSERT OR REPLACE INTO Task(id, title)
-    VALUES(?, ?);
+    INSERT OR REPLACE INTO Task(id, title, isDone)
+    VALUES(?, ?, ?);
 
 deleteTask:
 DELETE FROM Task
+WHERE id = ?;
+
+updateTask:
+UPDATE Task
+SET title = ?, isDone = ?
 WHERE id = ?;

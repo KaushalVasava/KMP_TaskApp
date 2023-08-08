@@ -18,6 +18,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -46,28 +47,28 @@ fun TaskAppTheme(
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colors = MaterialTheme.colors.copy(primary = Color.Black),
         shapes = MaterialTheme.shapes.copy(
             small = AbsoluteCutCornerShape(0.dp),
             medium = AbsoluteCutCornerShape(0.dp),
             large = AbsoluteCutCornerShape(0.dp)
         )
     ) {
-        content()
+        Surface(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            content()
+        }
     }
 }
 
 @Composable
 fun App(sqlDriver: SqlDriver) {
     TaskAppTheme {
-        val birdsViewModel = getViewModel(Unit, viewModelFactory { BirdsViewModel(sqlDriver) })
-//        BirdsPage(birdsViewModel)
+        val birdsViewModel = getViewModel(Unit, viewModelFactory { TaskViewModel(sqlDriver) })
         TaskList(birdsViewModel)
     }
 }
 
 @Composable
-fun TaskList(viewModel: BirdsViewModel) {
+fun TaskList(viewModel: TaskViewModel) {
     val tasks by viewModel.tasks.collectAsState()
     var txt by remember {
         mutableStateOf("")
@@ -121,7 +122,7 @@ fun TaskList(viewModel: BirdsViewModel) {
                     .padding(horizontal = 4.dp, vertical = 16.dp)
                     .align(Alignment.BottomCenter).clip(
                         RoundedCornerShape(8.dp)
-                    ),
+                    ).background(MaterialTheme.colors.background),
                 placeholder = {
                     Text("Add task", color = Color.Gray)
                 }
@@ -131,7 +132,7 @@ fun TaskList(viewModel: BirdsViewModel) {
 }
 
 @Composable
-fun TaskItem(viewModel: BirdsViewModel, task: Task2) {
+fun TaskItem(viewModel: TaskViewModel, task: Task2) {
     var isCompleted by remember {
         mutableStateOf(false)
     }
@@ -156,12 +157,15 @@ fun TaskItem(viewModel: BirdsViewModel, task: Task2) {
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Checkbox(isCompleted, onCheckedChange = {
-                if (it) {
-                    viewModel.deleteTask(task.id)
-                }
-                isCompleted = it
-            }, colors = CheckboxDefaults.colors(Color.Green))
+            Checkbox(
+                isCompleted,
+                onCheckedChange = {
+                    viewModel.update(task.title, it, task.id)
+                    isCompleted = it
+                },
+
+                colors = CheckboxDefaults.colors(Color.Green)
+            )
         }
     }
 }

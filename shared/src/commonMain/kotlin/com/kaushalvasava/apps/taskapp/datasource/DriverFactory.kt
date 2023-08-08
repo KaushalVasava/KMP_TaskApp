@@ -1,7 +1,7 @@
 package com.kaushalvasava.apps.taskapp.datasource
 
 import com.squareup.sqldelight.db.SqlDriver
-import mylocal3.db.LocalDb
+import taskdatabase.db.TaskDatabase
 
 //class TaskDatabaseFactory(
 //    private val driverFactory: DriverFactory
@@ -15,9 +15,9 @@ expect class DriverFactory {
     fun createDriver(): SqlDriver
 }
 
-fun createDatabase(driverFactory: DriverFactory): LocalDb {
+fun createDatabase(driverFactory: DriverFactory): TaskDatabase {
     val driver = driverFactory.createDriver()
-    return LocalDb(driver)
+    return TaskDatabase(driver)
     // Do more work with the database (see below).
 }
 //expect class DriverFactory {

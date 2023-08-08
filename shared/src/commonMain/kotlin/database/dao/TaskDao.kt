@@ -1,27 +1,33 @@
 package database.dao
 
+import com.kaushalvasava.apps.taskapp.util.toTask2
 import database.model.Task2
-import mylocal3.db.LocalDb
+import taskdatabase.db.TaskDatabase
 
-fun LocalDb.setTask(task: Task2) {
-    return taskQueries.insertTask(task.id, task.title)
+fun TaskDatabase.setTask(task: Task2) {
+    return taskQueries.insertTask(task.id, task.title, task.isDone)
 }
 
-fun LocalDb.deleteTask(id: Long) {
+fun TaskDatabase.deleteTask(id: Long) {
     return taskQueries.deleteTask(id)
 }
 
-fun LocalDb.getTasksList(): List<Task2> {
+fun TaskDatabase.getTasksList(): List<Task2> {
     return this.taskQueries.getTasks().executeAsList().map {
-        Task2(it.id, it.title)
+        it.toTask2()
+//        Task2(it.id, it.title, it.isDone)
     }
 }
 
-fun LocalDb.setTaskList(list: List<Task2>) {
+fun TaskDatabase.updateTask(title: String, isDone: Boolean, id: Long) {
+    return taskQueries.updateTask(title, isDone, id)
+}
+
+fun TaskDatabase.setTaskList(list: List<Task2>) {
     taskQueries.transaction {
         list.forEach {
             taskQueries.insertTask(
-                it.id, it.title
+                it.id, it.title, it.isDone
             )
         }
     }
