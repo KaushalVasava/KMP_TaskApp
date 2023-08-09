@@ -3,26 +3,31 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.AbsoluteCutCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,6 +47,7 @@ import com.squareup.sqldelight.db.SqlDriver
 import database.model.Task2
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlin.random.Random
 
 @Composable
 fun TaskAppTheme(
@@ -71,29 +77,48 @@ fun App(sqlDriver: SqlDriver) {
 @Composable
 fun TaskList(viewModel: TaskViewModel) {
     val tasks by viewModel.tasks.collectAsState()
+    val colors = listOf(
+        Color(0xFFF49E9E), Color(0xFF91D2F1), Color(0xFF97F19B),
+        Color(0xFFF1E197), Color(0xFFA785EC)
+    )
     var txt by remember {
         mutableStateOf("")
     }
+    var selectedColor by remember {
+        mutableStateOf(colors.first())
+    }
+    val isImp by remember {
+        mutableStateOf(false)
+    }
     if (tasks.isEmpty()) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            TextField(
-                value = txt,
-                onValueChange = { txt = it },
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.Done,
-                        contentDescription = "Add",
-                        modifier = Modifier.clickable {
-                            viewModel.addTask(txt)
-                            txt = ""
-                        })
-                },
-                modifier = Modifier.fillMaxWidth(1f).padding(16.dp).align(Alignment.Center),
-                placeholder = {
-                    Text("Add task", color = Color.Gray)
-                }
-            )
-        }
+        AddNote(selectedColor, viewModel, Modifier.padding(horizontal = 8.dp), onColorSelection = {
+            selectedColor = it
+        })
+//        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+//            TextField(
+//                value = txt,
+//                onValueChange = { txt = it },
+//                trailingIcon = {
+//                    Icon(
+//                        Icons.Default.Done,
+//                        contentDescription = "Add",
+//                        modifier = Modifier.clickable {
+//                            viewModel.addTask(
+//                                Task2(
+//                                    title = txt,
+//                                    color = Color.Green.hashCode().toLong(),
+//                                    isImportant = isImp
+//                                )
+//                            )
+//                            txt = ""
+//                        })
+//                },
+//                modifier = Modifier.fillMaxWidth(1f).padding(16.dp).align(Alignment.Center),
+//                placeholder = {
+//                    Text("Add task", color = Color.Gray)
+//                }
+//            )
+//        }
     } else {
         Box(Modifier.padding(horizontal = 8.dp)) {
             AnimatedVisibility(tasks.isNotEmpty()) {
@@ -113,6 +138,36 @@ fun TaskList(viewModel: TaskViewModel) {
                     }
                 }
             }
+            AddNote(selectedColor, viewModel, modifier = Modifier, onColorSelection = {
+                selectedColor = it
+            })
+        }
+    }
+}
+
+@Composable
+fun AddNote(
+    selectedColor: Color,
+    viewModel: TaskViewModel,
+    modifier: Modifier,
+    onColorSelection: (Color) -> Unit,
+) {
+    val colors = listOf(
+        Color(0xFFF49E9E), Color(0xFF91D2F1), Color(0xFF97F19B),
+        Color(0xFFF1E197), Color(0xFFA785EC)
+    )
+    var txt by remember {
+        mutableStateOf("")
+    }
+    val isImp by remember {
+        mutableStateOf(false)
+    }
+    Box(modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).clip(
+                RoundedCornerShape(16.dp)
+            ).background(Color.White)
+        ) {
             TextField(
                 value = txt,
                 onValueChange = { txt = it },
@@ -121,19 +176,48 @@ fun TaskList(viewModel: TaskViewModel) {
                         Icons.Default.Done,
                         contentDescription = "Add",
                         modifier = Modifier.clickable {
-                            viewModel.addTask(txt)
+                            viewModel.addTask(
+                                Task2(
+                                    id = Random.nextLong(0, 10000000L),
+                                    title = txt,
+                                    color = selectedColor.hashCode().toLong(),
+                                    isImportant = isImp
+                                )
+                            )
                             txt = ""
-                        })
+                        }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(1f)
                     .padding(horizontal = 4.dp, vertical = 16.dp)
-                    .align(Alignment.BottomCenter).clip(
+                    .clip(
                         RoundedCornerShape(8.dp)
                     ).background(MaterialTheme.colors.background),
                 placeholder = {
                     Text("Add task", color = Color.Gray)
                 }
             )
+            LazyRow(Modifier.fillMaxWidth().padding(horizontal = 4.dp)) {
+                items(colors) {
+                    Card(modifier = Modifier.padding(4.dp).clip(CircleShape).clickable {
+                        onColorSelection(it)
+//                        selectedColor = it
+                    }) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.size(40.dp).background(it)
+                        ) {
+                            if (it == selectedColor) {
+                                Icon(
+                                    Icons.Default.Done,
+                                    contentDescription = null,
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -152,11 +236,17 @@ fun TaskItem(viewModel: TaskViewModel, task: Task2) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .background(Brush.horizontalGradient(listOf(Color.Green, Color.Transparent)))
+                .background(Brush.horizontalGradient(listOf(Color(task.color), Color.Transparent)))
                 .padding(horizontal = 4.dp).clip(
                     RoundedCornerShape(8.dp)
                 )
         ) {
+            Checkbox(
+                checked = task.isImportant, onCheckedChange = {
+                    viewModel.update(task.copy(isImportant = it))
+                },
+                colors = CheckboxDefaults.colors(Color.Black)
+            )
             Text(
                 task.title,
                 fontSize = 16.sp,
@@ -167,12 +257,18 @@ fun TaskItem(viewModel: TaskViewModel, task: Task2) {
             Checkbox(
                 isCompleted,
                 onCheckedChange = {
-                    viewModel.update(task.title, it, task.id)
+                    viewModel.update(task.copy(isDone = it))
                     isCompleted = it
                 },
-
                 colors = CheckboxDefaults.colors(Color.Green)
             )
+            IconButton(
+                onClick = {
+                    viewModel.deleteTask(task.id)
+                }
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "delete")
+            }
         }
     }
 }

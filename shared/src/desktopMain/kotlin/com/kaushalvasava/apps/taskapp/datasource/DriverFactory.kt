@@ -2,7 +2,7 @@ package com.kaushalvasava.apps.taskapp.datasource
 
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
-import taskdatabase.db.TaskDatabase
+import task_database.db.TaskDatabase
 import java.io.File
 
 actual class DriverFactory {
@@ -19,9 +19,9 @@ actual class DriverFactory {
 
 //        val databasePath =
 //            File(System.getProperty("java.io.tmpdir"), "mylocal2.db")
-        val driver = JdbcSqliteDriver(url = "jdbc:sqlite:taskdatabase.db")
+        val driver = JdbcSqliteDriver(url = "jdbc:sqlite:task_database.db")
 //                " ${databasePath.path}")
-        if (!File("taskdatabase.db").exists()) {
+        if (!File("task_database.db").exists()) {
             TaskDatabase.Schema.create(driver)
         }
         return driver
