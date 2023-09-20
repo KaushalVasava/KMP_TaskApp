@@ -10,7 +10,7 @@ fun main() =
         Window(
             onCloseRequest = ::exitApplication,
             state = windowState,
-            title = "Tasks"
+            title = "Tasks",
         ) {
           MainView()
         }

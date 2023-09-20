@@ -5,4 +5,4 @@ import androidx.compose.runtime.Composable
 import com.kaushalvasava.apps.taskapp.datasource.DriverFactory
 
 @Composable
-fun MainView() = App(DriverFactory().createDriver())
+fun MainView() = App(DriverFactory().createDriver(), false)
