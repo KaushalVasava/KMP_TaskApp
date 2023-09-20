@@ -81,44 +81,13 @@ fun TaskList(viewModel: TaskViewModel) {
         Color(0xFFF49E9E), Color(0xFF91D2F1), Color(0xFF97F19B),
         Color(0xFFF1E197), Color(0xFFA785EC)
     )
-    var txt by remember {
-        mutableStateOf("")
-    }
     var selectedColor by remember {
         mutableStateOf(colors.first())
-    }
-    val isImp by remember {
-        mutableStateOf(false)
     }
     if (tasks.isEmpty()) {
         AddNote(selectedColor, viewModel, Modifier.padding(horizontal = 8.dp), onColorSelection = {
             selectedColor = it
         })
-//        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-//            TextField(
-//                value = txt,
-//                onValueChange = { txt = it },
-//                trailingIcon = {
-//                    Icon(
-//                        Icons.Default.Done,
-//                        contentDescription = "Add",
-//                        modifier = Modifier.clickable {
-//                            viewModel.addTask(
-//                                Task2(
-//                                    title = txt,
-//                                    color = Color.Green.hashCode().toLong(),
-//                                    isImportant = isImp
-//                                )
-//                            )
-//                            txt = ""
-//                        })
-//                },
-//                modifier = Modifier.fillMaxWidth(1f).padding(16.dp).align(Alignment.Center),
-//                placeholder = {
-//                    Text("Add task", color = Color.Gray)
-//                }
-//            )
-//        }
     } else {
         Box(Modifier.padding(horizontal = 8.dp)) {
             AnimatedVisibility(tasks.isNotEmpty()) {
