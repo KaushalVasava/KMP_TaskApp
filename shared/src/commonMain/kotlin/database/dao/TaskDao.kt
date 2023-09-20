@@ -2,6 +2,8 @@ package database.dao
 
 import com.kaushalvasava.apps.taskapp.util.toTask2
 import database.model.Task2
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import task_database.db.TaskDatabase
 
 fun TaskDatabase.setTask(task: Task2) {
