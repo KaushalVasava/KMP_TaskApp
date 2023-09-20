@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import task_database.db.TaskDatabase
 
 class TaskViewModel(driver: SqlDriver) : ViewModel() {
@@ -44,7 +45,7 @@ class TaskViewModel(driver: SqlDriver) : ViewModel() {
 
     fun update(task2: Task2) {
         viewModelScope.launch(Dispatchers.IO) {
-            database.updateTask(task2)
+            database.updateTask(task2.copy(date = Clock.System.now().toEpochMilliseconds(),))
             getTasks()
         }
     }
