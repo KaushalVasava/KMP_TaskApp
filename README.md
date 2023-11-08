@@ -23,11 +23,6 @@ It is a Kotlin Multi-Platform(KMP) Task app using SqlDelight, Kotlin, MVVM archi
 - IOS
 - Desktop
 
-# Video
-
-https://github.com/KaushalVasava/KMP_TaskApp/assets/49050597/b915fe84-7348-4a1f-86f5-6a2f5a1a4855
-
-
 # Contribution
 You can contribute this project. Just Solve issue or update code and raise PR. I'll do code review and merge your changes into main branch. See Commit message guidelines https://initialcommit.com/blog/git-commit-messages-best-practices
 
