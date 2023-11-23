@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -33,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import database.model.Task2
 import kotlin.random.Random
@@ -128,12 +131,16 @@ fun AddNote(
                 }
                 item {
                     Spacer(Modifier.width(8.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                            .semantics(mergeDescendants = true) { }
+                            .toggleable(isCompleted,role = Role.Switch){
+                                onCheckedChange(it)
+                            },
+                    ) {
                         Text("Completed")
                         Spacer(Modifier.width(8.dp))
-                        Switch(isCompleted, onCheckedChange = {
-                            onCheckedChange(it)
-                        })
+                        Switch(isCompleted, onCheckedChange = null)
                     }
                 }
             }
