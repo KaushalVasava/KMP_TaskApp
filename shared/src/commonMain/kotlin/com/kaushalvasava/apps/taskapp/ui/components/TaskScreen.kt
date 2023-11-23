@@ -56,8 +56,9 @@ fun TaskScreen(viewModel: TaskViewModel, isTopBarVisible: Boolean) {
             selectedColor = selectedColor,
             modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
             isCompleted = isCompleted,
+            title = text,
             onTaskAdd = {
-
+                viewModel.addTask(it)
             },
             onTextChange = {
                 text = it

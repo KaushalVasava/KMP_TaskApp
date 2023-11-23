@@ -5,9 +5,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,8 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -58,7 +57,7 @@ fun TaskItem(
     var isCompleted by remember {
         mutableStateOf(task.isDone)
     }
-    var isImp by remember {
+    val isImp by remember {
         mutableStateOf(task.isImportant)
     }
 
@@ -90,43 +89,50 @@ fun TaskItem(
                         onItemClick()
                     }
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(
-                                        Color(task.color),
-                                        Color.Transparent
+                    Box {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier
+                                .background(
+                                    Brush.horizontalGradient(
+                                        listOf(
+                                            Color(task.color),
+                                            Color.Transparent
+                                        )
                                     )
                                 )
-                            ).drawBehind {
-                                if (task.isImportant) {
-                                    drawCircle(Color.Red, radius = 15f, center = Offset(20f, 20f))
-                                }
-                            }
-                    ) {
-                        CircleCheckbox(
-                            isCompleted,
-                            onCheckedChange = {
-                                viewModel.update(task.copy(isDone = it))
-                                isCompleted = it
-                            }
-                        )
-                        Text(
-                            task.title,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(
-                            onClick = {
-                                viewModel.deleteTask(task.id)
-                            }
                         ) {
-                            Icon(Icons.Default.Delete, contentDescription = "delete")
+                            CircleCheckbox(
+                                isCompleted,
+                                onCheckedChange = {
+                                    viewModel.update(task.copy(isDone = it))
+                                    isCompleted = it
+                                }
+                            )
+                            Text(
+                                task.title,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            IconButton(
+                                onClick = {
+                                    viewModel.deleteTask(task.id)
+                                }
+                            ) {
+                                Icon(Icons.Default.Delete, contentDescription = "delete")
+                            }
+                        }
+                        if(isImp) {
+                            Icon(
+                                imageVector = Icons.Outlined.Favorite,
+                                "null",
+                                modifier = Modifier.padding(top = 2.dp, start = 2.dp).size(15.dp).align(
+                                    Alignment.TopStart
+                                )
+                            )
                         }
                     }
                 }
@@ -146,7 +152,7 @@ fun TaskItem(
                 }
 
                 else -> {
-                    // no-op
+                    dismissState.reset()
                 }
             }
         }
