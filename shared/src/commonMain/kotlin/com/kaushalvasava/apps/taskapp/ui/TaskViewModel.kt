@@ -1,16 +1,16 @@
-import com.squareup.sqldelight.db.SqlDriver
-import database.dao.deleteTask
-import database.dao.getTasksList
-import database.dao.setTask
-import database.dao.updateTask
-import database.model.Task2
+import app.cash.sqldelight.db.SqlDriver
+import com.kaushalvasava.apps.taskapp.TaskDatabase
+import com.kaushalvasava.apps.taskapp.datasource.dao.deleteTask
+import com.kaushalvasava.apps.taskapp.datasource.dao.getTasksList
+import com.kaushalvasava.apps.taskapp.datasource.dao.setTask
+import com.kaushalvasava.apps.taskapp.datasource.dao.updateTask
+import com.kaushalvasava.apps.taskapp.datasource.model.Task2
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import task_database.db.TaskDatabase
 
 class TaskViewModel(driver: SqlDriver) : ViewModel() {
     val tasks = MutableStateFlow<List<Task2>>(emptyList())
@@ -19,6 +19,12 @@ class TaskViewModel(driver: SqlDriver) : ViewModel() {
 
     init {
         getTasks()
+    }
+
+    private fun getTasks() {
+        viewModelScope.launch(Dispatchers.IO) {
+            tasks.value = database.getTasksList()
+        }
     }
 
     fun addTask(task: Task2) {
@@ -32,14 +38,6 @@ class TaskViewModel(driver: SqlDriver) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             database.deleteTask(id)
             tasks.value = database.getTasksList()
-        }
-    }
-
-    private fun getTasks() {
-        viewModelScope.launch(Dispatchers.IO) {
-            tasks.value = database.getTasksList()
-                .sortedByDescending { it.date }
-                .sortedByDescending { it.isImportant }
         }
     }
 

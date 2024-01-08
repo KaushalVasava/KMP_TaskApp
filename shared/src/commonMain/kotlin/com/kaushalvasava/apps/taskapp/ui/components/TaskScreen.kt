@@ -1,6 +1,7 @@
 package com.kaushalvasava.apps.taskapp.ui.components
 
 import TaskViewModel
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -88,8 +90,7 @@ fun TaskScreen(viewModel: TaskViewModel, isTopBarVisible: Boolean) {
                         if (id != null) {
                             viewModel.update(it.copy(id = id!!))
                             id = null
-                        }
-                        else
+                        } else
                             viewModel.addTask(it)
                     },
                     onTextChange = {
@@ -111,6 +112,12 @@ fun TaskScreen(viewModel: TaskViewModel, isTopBarVisible: Boolean) {
                         verticalArrangement = Arrangement.Top,
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
+
+                        if(isCompleted) {
+                            item {
+                                Text("Completed Tasks")
+                            }
+                        }
                         items(tasks.filter { isCompleted == it.isDone }, key = {
                             it.id + it.hashCode() + it.date
 
@@ -125,15 +132,24 @@ fun TaskScreen(viewModel: TaskViewModel, isTopBarVisible: Boolean) {
                         }
                     }
                 } else {
-
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(420.dp),
-                        Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                     ) {
-                        items(tasks.filter { isCompleted == it.isDone }, key = {
-                            it.id + it.hashCode() + it.date
-                        }) {
+                        if (isCompleted) {
+                            item(span = {
+                                GridItemSpan(1)
+                            }) {
+                                Text("Completed Tasks")
+                            }
+                        }
+                        items(
+                            tasks.filter { isCompleted == it.isDone },
+                            key = {
+                                it.id + it.hashCode() + it.date
+                            }
+                        ) {
                             Row(Modifier.animateItemPlacement()) {
                                 TaskItem(viewModel, it) {
                                     text = it.title
