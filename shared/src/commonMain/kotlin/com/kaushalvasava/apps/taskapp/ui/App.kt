@@ -5,8 +5,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cash.sqldelight.db.SqlDriver
 import com.kaushalvasava.apps.taskapp.ui.components.TaskScreen
-import com.squareup.sqldelight.db.SqlDriver
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 

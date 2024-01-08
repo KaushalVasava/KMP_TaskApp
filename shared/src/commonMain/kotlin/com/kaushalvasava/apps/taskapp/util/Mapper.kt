@@ -1,7 +1,8 @@
 package com.kaushalvasava.apps.taskapp.util
 
-import database.Task
-import database.model.Task2
+import com.kaushalvasava.apps.taskapp.datasource.model.Task2
+import comkaushalvasavaappstaskapp.Task
+
 
 fun Task2.toTask(): Task {
     return Task(id, title, isDone, color, date, isImportant)

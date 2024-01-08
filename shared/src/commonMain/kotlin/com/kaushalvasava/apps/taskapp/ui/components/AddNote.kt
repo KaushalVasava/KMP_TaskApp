@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
@@ -28,7 +30,6 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +37,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import database.model.Task2
+import com.kaushalvasava.apps.taskapp.datasource.model.Task2
 import kotlin.random.Random
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -71,7 +73,7 @@ fun AddNote(
                 .background(Color.White),
             maxItemsInEachRow = 2,
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.Center
         ) {
             TextField(
                 value = title,
@@ -83,17 +85,33 @@ fun AddNote(
                         Icons.Default.Done,
                         contentDescription = "Add",
                         modifier = Modifier.clickable {
-                            val task = Task2(
-                                id = Random.nextLong(0, 10000000L),
-                                title = title,
-                                color = selectedColor.hashCode().toLong(),
-                                isImportant = isImp
-                            )
-                            onTaskAdd(task)
-                            onTextChange("")
+                            if (title.isNotEmpty()) {
+                                val task = Task2(
+                                    id = Random.nextLong(0, 10000000L),
+                                    title = title,
+                                    color = selectedColor.hashCode().toLong(),
+                                    isImportant = isImp
+                                )
+                                onTaskAdd(task)
+                                onTextChange("")
+                            }
                         }
                     )
                 },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    val task = Task2(
+                        id = Random.nextLong(0, 10000000L),
+                        title = title,
+                        color = selectedColor.hashCode().toLong(),
+                        isImportant = isImp
+                    )
+                    if (title.isNotEmpty()) {
+                        onTaskAdd(task)
+                        onTextChange("")
+                        this.defaultKeyboardAction(imeAction = ImeAction.Done)
+                    }
+                }),
                 modifier = Modifier
                     .widthIn(400.dp)
                     .padding(horizontal = 8.dp, vertical = 16.dp)
@@ -105,8 +123,7 @@ fun AddNote(
                 }
             )
             LazyRow(
-                Modifier
-                    .padding(horizontal = 4.dp)
+                Modifier.padding(horizontal = 4.dp)
             ) {
                 items(colors) {
                     Box(
@@ -127,14 +144,14 @@ fun AddNote(
                             )
                         }
                     }
-
                 }
                 item {
                     Spacer(Modifier.width(8.dp))
                     Row(
-                        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
                             .semantics(mergeDescendants = true) { }
-                            .toggleable(isCompleted,role = Role.Switch){
+                            .toggleable(isCompleted, role = Role.Switch) {
                                 onCheckedChange(it)
                             },
                     ) {

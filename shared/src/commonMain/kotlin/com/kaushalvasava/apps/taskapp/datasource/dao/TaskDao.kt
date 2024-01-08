@@ -1,10 +1,8 @@
-package database.dao
+package com.kaushalvasava.apps.taskapp.datasource.dao
 
+import com.kaushalvasava.apps.taskapp.TaskDatabase
+import com.kaushalvasava.apps.taskapp.datasource.model.Task2
 import com.kaushalvasava.apps.taskapp.util.toTask2
-import database.model.Task2
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import task_database.db.TaskDatabase
 
 fun TaskDatabase.setTask(task: Task2) {
     return taskQueries.insertTask(
@@ -22,9 +20,11 @@ fun TaskDatabase.deleteTask(id: Long) {
 }
 
 fun TaskDatabase.getTasksList(): List<Task2> {
-    return this.taskQueries.getTasks().executeAsList().map {
-        it.toTask2()
-    }
+    return this.taskQueries.getTasks().executeAsList()
+        .sortedByDescending { it.date }
+        .sortedByDescending { it.isImportant }.map {
+            it.toTask2()
+        }
 }
 
 fun TaskDatabase.updateTask(task: Task2) {

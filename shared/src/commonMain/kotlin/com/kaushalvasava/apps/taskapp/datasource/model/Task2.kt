@@ -1,4 +1,4 @@
-package database.model
+package com.kaushalvasava.apps.taskapp.datasource.model
 
 import kotlinx.datetime.Clock
 

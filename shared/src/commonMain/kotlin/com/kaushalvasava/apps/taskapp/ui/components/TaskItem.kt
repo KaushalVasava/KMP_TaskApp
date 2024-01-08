@@ -44,7 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import database.model.Task2
+import com.kaushalvasava.apps.taskapp.datasource.model.Task2
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
